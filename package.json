@@ -1,0 +1,23 @@
+{
+  "name": "touche_pas_au_klaxon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+  "sass:dev": "sass --no-source-map --load-path=node_modules public/assets/scss/app.scss public/assets/css/app.css",
+  "sass:watch": "sass --watch --load-path=node_modules public/assets/scss/app.scss public/assets/css/app.css"
+  },
+
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.8",
+    "sass": "^1.93.2"
+  }
+}
