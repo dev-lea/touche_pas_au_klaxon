@@ -17,6 +17,7 @@ final class AdminController extends Controller
     return null;
   }
 
+  // --- Pages ---
   public function dashboard(): Response {
     if ($r = $this->guard()) return $r;
     return $this->view('admin_dashboard', [
@@ -39,5 +40,44 @@ final class AdminController extends Controller
   public function trips(): Response {
     if ($r = $this->guard()) return $r;
     return $this->view('admin_trips', ['trips' => Trip::listAll()]);
+  }
+
+  // --- POST multi-actions Agences (create/update/delete)
+  public function agenciesPost(): Response {
+    if ($r = $this->guard()) return $r;
+
+    $op   = $_POST['op'] ?? 'create';
+    $name = trim((string)($_POST['name'] ?? ''));
+    $id   = isset($_POST['id']) ? (int)$_POST['id'] : null;
+
+    try {
+      switch ($op) {
+        case 'create':
+          if ($name === '') throw new \InvalidArgumentException('Le nom de l’agence est requis.');
+          Agency::create($name);
+          Flash::set('success', 'Agence créée.');
+          break;
+
+        case 'update':
+          if (!$id) throw new \InvalidArgumentException('ID manquant.');
+          if ($name === '') throw new \InvalidArgumentException('Le nom de l’agence est requis.');
+          Agency::update($id, $name);
+          Flash::set('success', 'Agence modifiée.');
+          break;
+
+        case 'delete':
+          if (!$id) throw new \InvalidArgumentException('ID manquant.');
+          Agency::delete($id);
+          Flash::set('success', 'Agence supprimée.');
+          break;
+
+        default:
+          Flash::set('danger', 'Action inconnue.');
+      }
+    } catch (\Throwable $e) {
+      Flash::set('danger', 'Erreur: '.$e->getMessage());
+    }
+
+    return $this->redirect('/admin/agencies');
   }
 }

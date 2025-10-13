@@ -8,13 +8,19 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 require __DIR__ . '/../vendor/autoload.php';
 session_start();
 
-// .env
+// Charge .env
 Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
 
+// -------------------------------------------------------
+// Router
+// -------------------------------------------------------
 $router = new \Buki\Router\Router([
   'base_folder' => dirname(__DIR__) . '/app/Controllers',
   'paths'       => ['controllers' => 'App\\Controllers'],
 ]);
+
+// Tous les {id} (trips, etc.) doivent être numériques
+$router->pattern('id', '[0-9]+');
 
 // ===================== HOME =====================
 $router->get('/', function () {
@@ -76,6 +82,19 @@ $router->get('/admin/trips', function () {
   return $c->trips();
 });
 
+// ===================== ADMIN / AGENCIES (UNIQUE POST) =====================
+// Page liste
+$router->get('/admin/agencies', function () {
+  $c = new \App\Controllers\AdminController();
+  return $c->agencies();
+});
+
+// POST multi-actions: create / update / delete
+$router->post('/admin/agencies', function () {
+  $c = new \App\Controllers\AdminController();
+  return $c->agenciesPost(); // <-- nouvelle méthode
+});
+
 // ===================== DIAG / DB =====================
 $router->get('/db-check', function () {
   try {
@@ -95,8 +114,20 @@ $router->get('/db-check', function () {
   }
 });
 
-// diag très utiles
+// Ping diag
 $router->get('/diag/ping', fn() => new \Symfony\Component\HttpFoundation\Response('pong',200));
+
+// DIAG POST: pour vérifier ce que reçoit le router (à enlever après debug)
+$router->post('/diag/echo', function () {
+  return new \Symfony\Component\HttpFoundation\Response(
+    json_encode([
+      'method' => $_SERVER['REQUEST_METHOD'] ?? null,
+      'uri'    => $_SERVER['REQUEST_URI'] ?? null,
+      'post'   => $_POST,
+    ], JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),
+    200, ['Content-Type'=>'application/json']
+  );
+});
 
 // -------------------------------------------------
 $router->run();
