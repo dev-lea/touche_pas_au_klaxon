@@ -8,19 +8,20 @@ error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 require __DIR__ . '/../vendor/autoload.php';
 session_start();
 
-// Charge .env
-Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
+use Buki\Router\Router;
+use Symfony\Component\HttpFoundation\Response;
+use Dotenv\Dotenv;
+
+// .env
+Dotenv::createImmutable(dirname(__DIR__))->load();
 
 // -------------------------------------------------------
 // Router
 // -------------------------------------------------------
-$router = new \Buki\Router\Router([
+$router = new Router([
   'base_folder' => dirname(__DIR__) . '/app/Controllers',
   'paths'       => ['controllers' => 'App\\Controllers'],
 ]);
-
-// Tous les {id} (trips, etc.) doivent être numériques
-$router->pattern('id', '[0-9]+');
 
 // ===================== HOME =====================
 $router->get('/', function () {
@@ -43,6 +44,7 @@ $router->get('/logout', function () {
 });
 
 // ===================== TRIPS (USER) =====================
+// Créer
 $router->get('/trips/create', function () {
   $c = new \App\Controllers\TripController();
   return $c->createForm();
@@ -51,15 +53,21 @@ $router->post('/trips', function () {
   $c = new \App\Controllers\TripController();
   return $c->store();
 });
-$router->get('/trips/{id}/edit', function ($id) {
+
+// EDIT (GET)  -> /trips/:id/edit
+$router->get('/trips/:id/edit', function ($id) {
   $c = new \App\Controllers\TripController();
   return $c->editForm((int)$id);
 });
-$router->post('/trips/{id}', function ($id) {
+
+// UPDATE (POST) -> /trips/:id
+$router->post('/trips/:id', function ($id) {
   $c = new \App\Controllers\TripController();
   return $c->update((int)$id);
 });
-$router->post('/trips/{id}/delete', function ($id) {
+
+// DELETE (POST) -> /trips/:id/delete
+$router->post('/trips/:id/delete', function ($id) {
   $c = new \App\Controllers\TripController();
   return $c->delete((int)$id);
 });
@@ -77,22 +85,14 @@ $router->get('/admin/agencies', function () {
   $c = new \App\Controllers\AdminController();
   return $c->agencies();
 });
+$router->post('/admin/agencies', function () {
+  // un seul endpoint POST qui route create/rename/delete selon un champ caché
+  $c = new \App\Controllers\AdminController();
+  return $c->agenciesPost();
+});
 $router->get('/admin/trips', function () {
   $c = new \App\Controllers\AdminController();
   return $c->trips();
-});
-
-// ===================== ADMIN / AGENCIES (UNIQUE POST) =====================
-// Page liste
-$router->get('/admin/agencies', function () {
-  $c = new \App\Controllers\AdminController();
-  return $c->agencies();
-});
-
-// POST multi-actions: create / update / delete
-$router->post('/admin/agencies', function () {
-  $c = new \App\Controllers\AdminController();
-  return $c->agenciesPost(); // <-- nouvelle méthode
 });
 
 // ===================== DIAG / DB =====================
@@ -104,30 +104,14 @@ $router->get('/db-check', function () {
       PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
     $row = $pdo->query("SELECT COUNT(*) AS c FROM agencies")->fetch();
-    return new \Symfony\Component\HttpFoundation\Response(
-      "DB OK, agencies=".$row['c'], 200, ['Content-Type'=>'text/plain']
-    );
+    return new Response("DB OK, agencies=".$row['c'], 200, ['Content-Type'=>'text/plain']);
   } catch (Throwable $e) {
-    return new \Symfony\Component\HttpFoundation\Response(
-      "DB ERROR: ".$e->getMessage(), 500, ['Content-Type'=>'text/plain']
-    );
+    return new Response("DB ERROR: ".$e->getMessage(), 500, ['Content-Type'=>'text/plain']);
   }
 });
 
 // Ping diag
-$router->get('/diag/ping', fn() => new \Symfony\Component\HttpFoundation\Response('pong',200));
-
-// DIAG POST: pour vérifier ce que reçoit le router (à enlever après debug)
-$router->post('/diag/echo', function () {
-  return new \Symfony\Component\HttpFoundation\Response(
-    json_encode([
-      'method' => $_SERVER['REQUEST_METHOD'] ?? null,
-      'uri'    => $_SERVER['REQUEST_URI'] ?? null,
-      'post'   => $_POST,
-    ], JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE),
-    200, ['Content-Type'=>'application/json']
-  );
-});
+$router->get('/diag/ping', fn() => new Response('pong',200));
 
 // -------------------------------------------------
 $router->run();
