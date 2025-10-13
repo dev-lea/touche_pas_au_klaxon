@@ -1,9 +1,13 @@
 <?php
 namespace App\Core;
+
 final class View {
-  public static function render(string $view, array $data=[]): void {
+  public static function renderToString(string $view, array $data = []): string {
     extract($data);
-    $app = require __DIR__.'/../../config/app.php';
-    include __DIR__.'/../Views/layout.php';
+    $app = ['name' => 'Touche pas au klaxon'];
+    $viewFile = $view;
+    ob_start();
+    include __DIR__ . '/../Views/layout.php';
+    return ob_get_clean();
   }
 }
