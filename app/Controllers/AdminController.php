@@ -1,30 +1,43 @@
 <?php
 namespace App\Controllers;
-use App\Core\Controller; use App\Core\Flash;
-use App\Models\{Agency,Trip};
 
-final class AdminController extends Controller {
-  private function guard() {
-    $u = $_SESSION['user'] ?? null;
-    if(!$u || ($u['role'] ?? 'user') !== 'admin') $this->redirect('/');
+use App\Core\Controller;
+use App\Core\Auth;
+use App\Core\Flash;
+use Symfony\Component\HttpFoundation\Response;
+use App\Models\{User,Agency,Trip};
+
+final class AdminController extends Controller
+{
+  private function guard(): ?Response {
+    if (!Auth::isAdmin()) {
+      Flash::set('danger', 'Accès réservé à l’administrateur');
+      return $this->redirect('/');
+    }
+    return null;
   }
-  public function dashboard() {
-    $this->guard();
-    $this->view('admin_dashboard',[
-      'agencies'=>Agency::all(),
-      'trips'=>Trip::listAll()
+
+  public function dashboard(): Response {
+    if ($r = $this->guard()) return $r;
+    return $this->view('admin_dashboard', [
+      'usersCount'    => count(User::all()),
+      'agenciesCount' => count(Agency::all()),
+      'tripsCount'    => count(Trip::listAll()),
     ]);
   }
-  public function storeAgency() { $this->guard();
-    $name=trim($_POST['name']??''); if($name===''){ Flash::set('danger','Nom requis'); }
-    else { Agency::create($name); Flash::set('success','Agence créée'); }
-    $this->redirect('/admin');
+
+  public function users(): Response {
+    if ($r = $this->guard()) return $r;
+    return $this->view('admin_users', ['users' => User::all()]);
   }
-  public function updateAgency($id){ $this->guard();
-    $name=trim($_POST['name']??''); if($name===''){ Flash::set('danger','Nom requis'); }
-    else { Agency::update((int)$id,$name); Flash::set('success','Agence modifiée'); }
-    $this->redirect('/admin');
+
+  public function agencies(): Response {
+    if ($r = $this->guard()) return $r;
+    return $this->view('admin_agencies', ['agencies' => Agency::all()]);
   }
-  public function deleteAgency($id){ $this->guard(); Agency::delete((int)$id);
-    Flash::set('success','Agence supprimée'); $this->redirect('/admin'); }
+
+  public function trips(): Response {
+    if ($r = $this->guard()) return $r;
+    return $this->view('admin_trips', ['trips' => Trip::listAll()]);
+  }
 }

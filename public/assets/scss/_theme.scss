@@ -1,4 +1,96 @@
-$white: #f1f8fc; $primary:#0074c7; $secondary:#00497c; $dark:#384050; $danger:#cd2c2e; $success:#82b864;
-$body-bg:$white; $body-color:#212529;
-$theme-colors:("primary":$primary,"secondary":$secondary,"dark":$dark,"danger":$danger,"success":$success);
-$border-radius:.6rem; $border-radius-sm:.5rem; $border-radius-lg:.8rem;
+// ===== Palette imposée
+$klx-light:    #f1f8fc;
+$klx-blue:     #0074c7;
+$klx-deep:     #00497c;
+$klx-ink:      #384050;
+$klx-danger:   #cd2c2e;
+$klx-success:  #82b864;
+
+// ===== Overrides Bootstrap (avant @import "bootstrap")
+$primary:       $klx-blue;
+$secondary:     $klx-ink;
+$danger:        $klx-danger;
+$success:       $klx-success;
+$light:         $klx-light;
+$dark:          $klx-deep;
+
+$body-bg:       $klx-light;
+$body-color:    $klx-ink;
+
+$border-radius:              0.75rem;
+$border-radius-lg:           1rem;
+$btn-border-radius:          0.9rem;
+$btn-padding-y:              .5rem;
+$btn-padding-x:              1rem;
+
+$table-bg:                   #fff;
+$table-striped-bg:           rgba(0,0,0,.03);
+$table-color:                $klx-ink;
+
+// ===== Composants custom
+.app-shell {
+  max-width: 1100px;
+  margin: 20px auto 60px;
+}
+
+.app-header {
+  background: #fff;
+  border: 2px solid #d9dde3;
+  border-radius: 1.5rem;
+  padding: .6rem .9rem;
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+
+  .brand {
+    font-weight: 700;
+    color: $klx-ink;
+    text-decoration: none;
+    padding: .35rem .8rem;
+    border-radius: 1rem;
+  }
+
+  .pill {
+    background: $klx-ink;
+    color: #fff;
+    padding: .45rem .9rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    border: 2px solid transparent;
+    display: inline-flex; align-items: center; gap:.35rem;
+    &:hover { background: $klx-deep; color: #fff; }
+    &.outline {
+      background: $klx-light; color: $klx-ink; border-color: $klx-ink;
+      &:hover { background: mix($klx-ink,#fff,8%); }
+    }
+  }
+
+  .menu { display: flex; gap: .5rem; align-items: center; }
+}
+
+.section-title {
+  margin: 24px 0 10px;
+  font-size: clamp(22px, 2.6vw, 28px);
+  font-weight: 700;
+  color: $klx-ink;
+}
+
+.table-wrap {
+  background:#fff; border-radius: 1.1rem; overflow: hidden;
+  border: 2px solid #d9dde3;
+}
+.table thead th {
+  background: $klx-ink; color: #fff; vertical-align: middle;
+}
+.table tbody tr:nth-child(odd){ background-color: $table-striped-bg; }
+
+.footer {
+  text-align:center; color: #6b7280; padding: 26px 10px;
+}
+
+// Actions icônes
+.action-inline {
+  display:flex; gap:.6rem; align-items:center;
+  a,button { border:0; background:transparent; color:$klx-ink; }
+  .see   { color:$klx-deep; }
+  .edit  { color:$klx-blue; }
+  .del   { color:$klx-danger; }
+}
