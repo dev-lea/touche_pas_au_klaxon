@@ -33,7 +33,7 @@ Projet : Devoir « Touche pas au Klaxon » — Application PHP MVC
 
 **Touche pas au klaxon** est une mini-application de covoiturage interne entre agences.
 
-- Développée en **PHP 8.2+**
+- Développée en **PHP 8.3+**
 - Architecture **MVC personnalisée**
 - Gestion des rôles (**visiteur**, **utilisateur**, **administrateur**)
 - Persistance via **MySQL**
