@@ -1,3 +1,8 @@
+<?php
+/** @var array $agencies */
+$agencies = $agencies ?? [];
+?>
+
 <h2 class="section-title">Agences</h2>
 
 <div class="row g-3">

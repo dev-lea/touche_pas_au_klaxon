@@ -1,3 +1,8 @@
+<?php
+/** @var array $users */
+$users = $users ?? [];
+?>
+
 <h2 class="section-title">Utilisateurs</h2>
 <div class="table-wrap">
   <table class="table table-striped mb-0">

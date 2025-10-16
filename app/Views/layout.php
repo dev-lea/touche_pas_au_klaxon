@@ -1,3 +1,10 @@
+<?php
+/** @var string $viewFile */
+$viewFile = $viewFile ?? '';
+if ($viewFile !== '' && file_exists($viewFile)) {
+    require $viewFile;
+}
+?>
 <?php $appName = 'Touche pas au klaxon'; ?>
 <!doctype html>
 <html lang="fr">

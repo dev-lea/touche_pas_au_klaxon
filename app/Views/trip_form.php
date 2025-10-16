@@ -1,4 +1,9 @@
 <?php
+/** @var array $agencies */
+$agencies = $agencies ?? [];
+?>
+
+<?php
 $editing = !empty($trip);
 $me = $me ?? \App\Core\Auth::user(); // par sécurité si non passé
 ?>

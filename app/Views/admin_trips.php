@@ -1,11 +1,9 @@
 <?php
+/** @var array $trips */
+$trips = $trips ?? [];
 use App\Core\Auth;
-
-/**
- * Variables:
- * - $trips : array (chaque ligne devrait contenir from_name, to_name, etc.)
- */
 ?>
+
 <h2 class="section-title">Trajets (administration)</h2>
 
 <div class="table-wrap">

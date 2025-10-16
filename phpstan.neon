@@ -1,0 +1,8 @@
+parameters:
+  level: 5
+  paths:
+    - app
+  checkMissingIterableValueType: true
+  parallel:
+    maximumNumberOfProcesses: 1
+  tmpDir: %rootDir%/var/tmp
