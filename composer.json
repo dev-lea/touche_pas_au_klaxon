@@ -22,5 +22,11 @@
     "require-dev": {
         "phpunit/phpunit": "11",
         "phpstan/phpstan": "1.11"
+    },
+    "scripts": {
+        "serve": "php -S localhost:4000 -t public",
+        "sass:dev": "sass --no-source-map --load-path=node_modules public/assets/scss/app.scss public/assets/css/app.css",
+        "test": "phpunit",
+        "stan": "phpstan analyse -l 5 app"
     }
 }
