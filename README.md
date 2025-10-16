@@ -199,6 +199,7 @@ Les captures se trouvent dans docs/screens/ :
 - Détails trajet (details_utilisateur.png)
 - Interface admin (header_admin.png)
 - Message flash (message_flash.png)
+- Agences admin (agences_admin.png)
 
 ---
 
